@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { Company: CompamyModel } = require('../db/models');
+const { Company: CompamyModel, Users: UserModel } = require('../db/models');
 const { ConflictException, NotFoundException } = require('../tools');
 const nodemailer = require('nodemailer')
 
@@ -47,7 +47,7 @@ async function sendInvitationEmail(email, companyName) {
       from: process.env.EMAIL_USERNAME,
       to: email,
       subject: 'Invitation to join ' + companyName,
-      text: 'You have been invited to join ' + companyName + 'localhost:/5001/v1/company/verify'
+      text: 'You have been invited to join ' + companyName + 'localhost:5001/v1/auth/login'
     };
 
     await transporter.sendMail(mailOptions);
@@ -83,7 +83,9 @@ const subscription = async (id, companyid) => {
     company.companyid === 3
   }
   return await company.update({ companyid })
-}
+};
+
+const addUser = async (userPayload)
 
 
 module.exports = {

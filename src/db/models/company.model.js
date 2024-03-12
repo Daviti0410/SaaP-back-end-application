@@ -12,11 +12,11 @@ class Company extends Model {
       allowNull: false,
      },
      email:{
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false,
      },
      password:{
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false,
      },
      country:{

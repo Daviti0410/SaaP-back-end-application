@@ -1,4 +1,4 @@
-const UserService = require('../services/user.service');
+const UserService = require('../services/company.service');
 const { safeControllerWrapper } = require('../tools');
 
 
@@ -26,11 +26,20 @@ const subscription = safeControllerWrapper (async (req, res) => {
   const response = await UserService.subscription(id, {companyid});
 
   return res.json(response);
-})
+});
+
+const addUser = safeControllerWrapper (async(req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+
+  const response = await UserService.addUser(id, { email });
+  return res.json(response)
+});
 
 
 module.exports = {
   getUser,
   deleteUser,
   subscription,
+  addUser,
 }
