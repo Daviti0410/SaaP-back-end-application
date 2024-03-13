@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const {  Users: UserModel } = require('../db/models');
+const {  Users: UserModel,  file: FileModel} = require('../db/models');
 const { ConflictException, NotFoundException } = require('../tools');
 
 const createUser = async (userPayload) => {
@@ -19,7 +19,21 @@ const createUser = async (userPayload) => {
       returning: true,
     });
   };
-  
+
+  const createFile = async(userPayload) => {
+    const file = await FileModel.findOne({
+      where: {
+        userId: userPayload.userId
+      }
+    });
+    if(!file) throw new NotFoundException('User NOt Found');
+
+    return FileModel.create(userPayload, {
+      returning: true,
+    });
+  };
+
   module.exports = {
-    createUser
+    createUser,
+    createFile
   }

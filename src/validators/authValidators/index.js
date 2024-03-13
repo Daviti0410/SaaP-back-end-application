@@ -32,4 +32,4 @@ const validateLogin = async (req, res, next) => {
 }
 
 
-module.exports = { validateRegister, validateLogin, validateUserRegister }
+module.exports = { validateRegister, validateLogin, validateUserRegister}

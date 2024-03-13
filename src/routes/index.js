@@ -7,7 +7,7 @@ const CheckAuthMiddleware = require('../middlewares/checkAuth.middleware');
 
 
 router.use('/auth', AuthRoute);
-router.use('./user', UserRoute)
+router.use('./user', UserRoute);
 router.use(CheckAuthMiddleware);
 
 router.use('/company', CompanyRoute);
