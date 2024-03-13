@@ -11,6 +11,15 @@ const validateRegister = async (req, res, next) => {
   });
 
   return joiValidator({ schema, objectToValidate: req.body, next })
+};
+
+const validateUserRegister = async (req, res, next) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    companyId: Joi.string().min(2).required(),
+  });
+
+  return joiValidator({ schema, objectToValidate: req.body, next })
 }
 
 const validateLogin = async (req, res, next) => {
@@ -23,4 +32,4 @@ const validateLogin = async (req, res, next) => {
 }
 
 
-module.exports = { validateRegister, validateLogin }
+module.exports = { validateRegister, validateLogin, validateUserRegister }

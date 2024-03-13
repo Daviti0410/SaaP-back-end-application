@@ -46,8 +46,8 @@ async function sendInvitationEmail(email, companyName) {
     const mailOptions = {
       from: process.env.EMAIL_USERNAME,
       to: email,
-      subject: 'Invitation to join ' + companyName,
-      text: 'You have been invited to join ' + companyName + 'localhost:5001/v1/auth/login'
+      subject: 'Verify company ' + companyName,
+      text: 'Verify your company ' + companyName + 'localhost:5001/v1/auth/login'
     };
 
     await transporter.sendMail(mailOptions);
@@ -60,6 +60,19 @@ async function sendInvitationEmail(email, companyName) {
 const deleteUser = async (id, authUser) => {
 
   const user = await CompamyModel.findByPk(id);
+
+  if (!user) throw new NotFoundException('Not Found');
+
+  if(!authUser.isAdmin) throw new UnauthorizedException('Unauthorized');
+
+
+  
+  await CompamyModel.destroy(id);
+};  
+
+const deleteCompanyUser = async (id, authUser) => {
+
+  const user = await UserModel.findByPk(id);
 
   if (!user) throw new NotFoundException('Not Found');
 
@@ -85,7 +98,43 @@ const subscription = async (id, companyid) => {
   return await company.update({ companyid })
 };
 
-const addUser = async (userPayload)
+const addUser = async (userPayload) => {
+  const user = await UserModel.findOne({ 
+    where: { 
+      id: userPayload.companyId,
+      email: userPayload.email, 
+    } 
+  });
+
+  if(user) throw new ConflictException('User Already exist')
+
+
+  const newUser = await UserModel.create(userPayload, { returning: true });
+  await sendInvitationEmail(newUser.email, newUser.companyName);
+  return newUser;
+};
+async function sendInvitationEmail(email, companyName) {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USERNAME, 
+        pass: process.env.EMAIL_PASSWORD,
+      }
+    });
+
+    const mailOptions = {
+      from: CompamyModel.companyName,
+      to: email,
+      subject: 'Invitation to join ' + companyName,
+      text: 'You have been invited to join ' + companyName + 'localhost:5001/v1/auth/'
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw error;
+  }
+}
 
 
 module.exports = {
@@ -93,4 +142,6 @@ module.exports = {
   createUser,
   deleteUser,
   subscription,
+  addUser,
+  deleteCompanyUser
 }

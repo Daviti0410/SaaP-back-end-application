@@ -11,13 +11,24 @@ const getUser = safeControllerWrapper (async (req, res) => {
 
 const deleteUser = safeControllerWrapper (async (req, res) => {
   const { id }  = req.params;
-  const { userId, isAdmin } = req.user;
+  const { isAdmin } = req.user;
   
 
-  const response = await UserService.deleteUser(id, {  userId, isAdmin });
+  const response = await UserService.deleteUser(id, { isAdmin });
 
   return res.json(response);
 });
+
+const deleteCompanyUser = safeControllerWrapper (async (req, res) => {
+  const { id }  = req.params;
+  const { isAdmin } = req.user;
+  
+
+  const response = await UserService.deleteCompanyUser(id, { isAdmin });
+
+  return res.json(response);
+});
+
 
 const subscription = safeControllerWrapper (async (req, res) => {
   const { id } = req.params;
@@ -30,9 +41,9 @@ const subscription = safeControllerWrapper (async (req, res) => {
 
 const addUser = safeControllerWrapper (async(req, res) => {
   const { id } = req.params;
-  const { email } = req.body;
+  const { email, companyId } = req.body;
 
-  const response = await UserService.addUser(id, { email });
+  const response = await UserService.addUser(id, { email, companyId });
   return res.json(response)
 });
 
@@ -42,4 +53,5 @@ module.exports = {
   deleteUser,
   subscription,
   addUser,
+  deleteCompanyUser
 }

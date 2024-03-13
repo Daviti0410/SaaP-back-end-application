@@ -23,6 +23,10 @@ class Users extends Model {
         type: DataTypes.STRING(50),
         allowNull: false,
        },
+       companyId: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+       }
       },
       {
         sequelize:connection,
