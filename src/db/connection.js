@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-const { Company, Subscription, SubscrptionTier, } = require('./models');
+const { Company, Subscription, SubscrptionTier, Users, File } = require('./models');
 const config = require('./config')
 
 
@@ -27,6 +27,9 @@ const connection = new Sequelize(
 Company.init(connection);
 Subscription.init(connection);
 SubscrptionTier.init(connection);
+Users.init(connection);
+File.init(connection);
+
 
 
 
@@ -36,6 +39,8 @@ SubscrptionTier.init(connection);
     Company.sync({ force: false }).catch((e) => console.error('company', e)),
     Subscription.sync({ force: false }).catch((e) => console.error('subscribtion', e)),
     SubscrptionTier.sync({ force: false }).catch((e) => console.error('subscribtiontier', e)),
+    Users.sync({ force: false }).catch((e) => console.error('user', e)),
+    File.sync({ force: false }).catch((e) => console.error('file', e)),
   ];
 
   await Promise.all(syncPromises);
