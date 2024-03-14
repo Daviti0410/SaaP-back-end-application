@@ -15,4 +15,17 @@ const createFile = safeControllerWrapper( async (req, res) => {
   return res.json(response);
   });
 
-  module.exports = { createFile }
+  const deleteFile = safeControllerWrapper( async (req, res) => {
+    const { id }  = req.params;
+    const { userId } = req.user;
+  
+    const response = await CompanyUserService.deleteProduct(id, {  userId });
+  
+    return res.json(response);
+  });
+
+
+  module.exports = { 
+    createFile,
+     deleteFile,
+  }
