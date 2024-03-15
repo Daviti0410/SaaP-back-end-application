@@ -21,6 +21,8 @@ const createUser = async (userPayload) => {
     });
   };
 
+  const findByUserEmail = (email) => UserModel.findOne({ where: { email }});
+
   const createFile = async(userPayload) => {
     const file = await FileModel.findOne({
       where: {
@@ -80,5 +82,6 @@ const createUser = async (userPayload) => {
   module.exports = {
     createUser,
     createFile,
-    deleteFile
+    deleteFile,
+    findByUserEmail
   }

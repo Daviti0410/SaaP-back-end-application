@@ -27,10 +27,18 @@ const login = safeControllerWrapper(async (req, res) => {
 
   return res.json({ token })
 });
+const Userlogin = safeControllerWrapper(async (req, res) => {
+  const payload = req.body;
+
+  const token = await AuthService.Userlogin(payload);
+
+  return res.json({ token })
+});
 
 
 module.exports = {
   register,
   login,
   UserRegister,
+  Userlogin
 }

@@ -73,13 +73,18 @@ const deleteUser = async (id, authUser) => {
 
 const deleteCompanyUser = async (id, authUser) => {
 
-  const user = await UserModel.findByPk(id);
+  const company = await CompamyModel.findByPk(id);
+  const user = await UserModel.findOne( {
+    where:{
+      companyId: compnay.id
+    }
+  })
 
   if (!user) throw new NotFoundException('Not Found');
 
   if(!authUser.isAdmin) throw new UnauthorizedException('Unauthorized');
 
-  if(id !== companyId) throw new ConflictException('You Do Not Have Premission');
+  if(company.id !== user.companyId) throw new ConflictException('You Do Not Have Premission');
 
   
   await UserModel.destroy(id);
