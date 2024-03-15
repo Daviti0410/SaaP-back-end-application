@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 const { Company, Subscription, SubscrptionTier, Users, File } = require('./models');
-const config = require('./config')
+const config = require('./config');
 
 
 const connection = new Sequelize(
@@ -12,6 +12,66 @@ const connection = new Sequelize(
     dialect: 'postgres',
   }
 );
+
+Company.hasMany(Subscription, {
+  as:'subscibtion',
+  foreignKey: {
+    name: 'id',
+    allowNull: false,
+  },
+});
+
+Subscription.belongsTo(Company, {
+  as: 'company',
+  foreignKey: {
+    name: 'subscriptionId',
+    allowNull: false,
+  }
+});
+
+Subscription.hasMany(SubscrptionTier, {
+  as: 'subscribtiontier',
+  foreignKey: {
+    name: 'id',
+    allowNull: false,
+  }
+});
+
+SubscrptionTier.belongsTo(Subscription, {
+  as: 'subscribtion',
+  foreignKey: {
+    name:'id',
+    allowNull: false,
+  }
+});
+Company.hasMany(Users, {
+  as:'users',
+  foreignKey: {
+    name: 'companyId',
+    allowNull: false,
+  },
+});
+Users.belongsTo(Company, {
+  as: 'company',
+  foreignKey: {
+    name: 'id',
+    allowNull: false,
+  }
+});
+Users.hasMany(File, {
+  as:'file',
+  foreignKey: {
+    name: 'UserId',
+    allowNull: false,
+  },
+});
+File.belongsTo(Users, {
+  as: 'users',
+  foreignKey: {
+    name: 'id',
+    allowNull: false,
+  }
+});
 
 
 (async () => {

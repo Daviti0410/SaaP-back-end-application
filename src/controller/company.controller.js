@@ -47,11 +47,18 @@ const addUser = safeControllerWrapper (async(req, res) => {
   return res.json(response)
 });
 
+const getBilling = safeControllerWrapper (async (req, res) => {
+  const { id } = req.params;
+  const response = await UserService.getBilling(id);
+
+  return res.json(response);
+})
 
 module.exports = {
   getUser,
   deleteUser,
   subscription,
   addUser,
-  deleteCompanyUser
+  deleteCompanyUser,
+  getBilling
 }

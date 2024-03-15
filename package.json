@@ -1,5 +1,5 @@
 {
-  "name": "saap",
+  "name": "saas",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -22,7 +22,6 @@
     "nodemailer": "^6.9.12",
     "pg": "^8.11.1",
     "sequelize": "^6.37.1",
-    "sequelize-cli": "^6.6.2",
-    "uuid": "^9.0.0"
+    "sequelize-cli": "^6.6.2"
   }
 }

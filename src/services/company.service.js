@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { Company: CompamyModel, Users: UserModel } = require('../db/models');
+const { Company: CompamyModel, Users: UserModel, Subscription, SubscrptionTier } = require('../db/models');
 const { ConflictException, NotFoundException } = require('../tools');
 const nodemailer = require('nodemailer')
 
@@ -14,6 +14,7 @@ const getUser = async (id) => {
   return data;
 };
 
+const findByEmail = (email) => CompamyModel.findOne({ where: { email }});
 
 const createUser = async (userPayload) => {
   const user = await CompamyModel.findOne({ 
@@ -65,7 +66,7 @@ const deleteUser = async (id, authUser) => {
 
   if(!authUser.isAdmin) throw new UnauthorizedException('Unauthorized');
 
-
+  if (id !== user.id) throw new ConflictException('Invalid User')
   
   await CompamyModel.destroy(id);
 };  
@@ -78,41 +79,59 @@ const deleteCompanyUser = async (id, authUser) => {
 
   if(!authUser.isAdmin) throw new UnauthorizedException('Unauthorized');
 
+  if(id !== companyId) throw new ConflictException('You Do Not Have Premission');
 
   
   await UserModel.destroy(id);
 };  
 
-const subscription = async (id, companyid) => {
+const subscription = async (id, subscriptionId) => {
   const company = await CompamyModel.findByPk(id);
 
   if (!company) throw new NotFoundException('Not Found');
 
-  if (companyid === 1) {
-    company.companyid === 1
-  } else if (companyid === 2){
-    company.companyid === 2
-  } else if (companyid === 3) {
-    company.companyid === 3
+  if (subscriptionId === 1) {
+    company.subscriptionId === 1
+  } else if (subscriptionId === 2){
+    company.subscriptionId === 2
+  } else if (subscriptionId === 3) {
+    company.subscriptionId === 3
   }
-  return await company.update({ companyid })
+  return await company.update({ subscriptionId })
 };
 
-const addUser = async (userPayload) => {
+const addUser = async (userPayload, id) => {
   const user = await UserModel.findOne({ 
     where: { 
       id: userPayload.companyId,
       email: userPayload.email, 
     } 
   });
+  const company = await CompamyModel.findByPk(id);
 
-  if(user) throw new ConflictException('User Already exist')
+  const subscibtion = await Subscription.findOne({
+    where: {
+      id: company.subscriptionId
+    }
+  })
 
+  if (user) throw new ConflictException('User Already exist');
+
+  if (company.subscriptionId === 1 || company.userAmount >= subscibtion.maxUsers) throw new ConflictException('User Amount Limit');
+  if (company.subscriptionId === 2 || company.userAmount >= subscibtion.maxUsers) throw new ConflictException('User Amount Limit');
+  
+  if (company.subscriptionId === 3 || company.userAmount >= 1000){
+    return await company.increment("billing", {by: 0.5})
+  }
+
+  await company.increment('userAmount', { by: 1 });
 
   const newUser = await UserModel.create(userPayload, { returning: true });
   await sendInvitationEmail(newUser.email, newUser.companyName);
   return newUser;
 };
+
+
 async function sendInvitationEmail(email, companyName) {
   try {
     const transporter = nodemailer.createTransport({
@@ -134,6 +153,29 @@ async function sendInvitationEmail(email, companyName) {
   } catch (error) {
     throw error;
   }
+};
+
+const getBilling = async (id) => {
+  const company = await CompamyModel.findByPk(id);
+  const subscription = await Subscription.findOne({
+    where: {
+      id: company.subscriptionId,
+    }
+  });
+  const subscriptionTier = await  SubscrptionTier.findOne ({
+    where: {
+      id: subscription.subscribtiontierid
+    }
+  })
+  if(!company) throw new NotFoundException('Company not found');
+  
+
+  company.billing = subscriptionTier.price; 
+
+  await company.save()
+
+  return company
+
 }
 
 
@@ -143,5 +185,7 @@ module.exports = {
   deleteUser,
   subscription,
   addUser,
-  deleteCompanyUser
+  deleteCompanyUser,
+  getBilling,
+  findByEmail 
 }

@@ -3,6 +3,11 @@ const { Model, DataTypes} = require('sequelize');
 class Company extends Model {
   static init(connection){
     super.init({
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
      companyName:{
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -37,8 +42,24 @@ class Company extends Model {
       allowNull: false,
       defaultValue: false,
      },
-    companyid: {
+     subscriptionId: {
       type:DataTypes.INTEGER,
+      allowNull: false,
+    },
+    subscriptionDate: {
+      type:DataTypes.timestamps,
+      allowNull: false,
+    },
+    fileAmount: {
+      type:DataTypes.INTEGER,
+      allowNull: false,
+    },
+    userAmount: {
+      type:DataTypes.INTEGER,
+      allowNull: false,
+    },
+    billing: {
+      type:DataTypes.FLOAT,
       allowNull: false,
     },
     },

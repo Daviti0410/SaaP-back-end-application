@@ -1,13 +1,18 @@
 const { Model, DataTypes} = require('sequelize');
 
-class subsrciption extends Model {
+class Subsrciption extends Model {
   static init(connection){
     super.init({
-     remeaningusers:{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+     maxUsers:{
       type: DataTypes.INTEGER,
       allowNull: false,
      },
-     remeaningfiles:{
+     maxFiles:{
       type: DataTypes.INTEGER,
       allowNull: false,
      },
@@ -24,4 +29,4 @@ class subsrciption extends Model {
     )
   }
 };
-module.exports = subsrciption;
+module.exports = Subsrciption;

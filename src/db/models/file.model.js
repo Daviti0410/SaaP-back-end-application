@@ -3,6 +3,11 @@ const { Model, DataTypes} = require('sequelize');
 class File extends Model {
     static init(connection){
       super.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
        title:{
         type: DataTypes.STRING(50),
         allowNull: false,
